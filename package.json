@@ -7,7 +7,10 @@
     "clean": "rimraf dist/*",
     "start": "npm run webpack-dev-server"
   },
-  "dependencies": {},
+  "dependencies": {
+    "mathjs": "^3.20.2",
+    "underscore": "^1.8.3"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
