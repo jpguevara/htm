@@ -1,0 +1,5 @@
+.DS_Store
+dist/
+src/main.bundle.js*
+src/main.bundle.js.*
+node_modules/
