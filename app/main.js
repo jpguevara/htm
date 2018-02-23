@@ -4,6 +4,10 @@ const SDR = require('./SDR');
 
 
 
-const sdrArray = SDR.createSDR();
+// const sdr1 = SDR.createSDR(16, 4);
+const sdr1 = SDR.createSDR();
+const sdr2 = [...sdr1];
 
-SDR.getInfo(sdrArray);
+SDR.getInfo(sdr1);
+SDR.injectNoise(sdr2);
+SDR.getInfo(sdr2);

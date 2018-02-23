@@ -35,19 +35,18 @@ function getCapacity(n, w) {
 
 function fillRandomSdr(sdr = [], w) {
   const n = sdr.length;
-  const bitsToTurnOn = _.range(w).reduce((prev, current, index, array) => {
+  const bitsToTurnOn = _.range(w).reduce(
+    (prev, current, index, array) => {
+      let bitToTurnOn = _.random(0, n - 1);
+      while (bitToTurnOn in prev) {
+        console.log('repetido');
+        bitToTurnOn = _.random(0, n - 1);
+      }
 
+      prev[bitToTurnOn] = 1;
 
-    let bitToTurnOn = _.random(0, n - 1);
-    while (bitToTurnOn in prev) {
-      console.log('repetido');
-      bitToTurnOn = _.random(0, n - 1);
-    }
-
-    prev[bitToTurnOn] = 1;
-
-    return prev;
-  }, {})
+      return prev;
+    }, {})
 
   Object.keys(bitsToTurnOn).forEach(k => sdr[k] = 1);
   return sdr;
@@ -62,18 +61,19 @@ function getW(sdr = []) {
 
 const getPopulation = getW;
 
+/**
+ * 
+ * @param {[]} sdr 
+ * @param {*} value 
+ */
 function reset(sdr, value) {
-  const n = sdr.length;
-  _.range(n).forEach((v, i) => {
-    sdr[i] = value;
-  });
-
+  sdr.fill(value);
   return sdr;
 }
 
 function createSDR(n = 2048, w = 40) {
-  const sdr = Array(n);
-  reset(sdr, 0);
+  const sdr = Array(n).fill(0);
+  // reset(sdr, 0);
   fillRandomSdr(sdr, w);
   return sdr;
 }
@@ -84,10 +84,14 @@ function getInfo(sdr = []) {
   const sparsity = getSparsity(n, w);
   const capacity = getCapacity(n, w);
   console.log('SDR: n=', n, ' w=', w, ' sparsity=', sparsity, 'capacity: ', capacity);
+  console.log('OnBits: ', getOnBits(sdr));
   console.log('sdr: ', sdr);
 }
-
-function getOnBits(sdr = []) {
+/**
+ * 
+ * @param {[number]} sdr 
+ */
+function getOnBits(sdr) {
   const onBits = [];
   sdr.forEach((value, index) => {
     value === 1 && onBits.push(index);
@@ -96,25 +100,59 @@ function getOnBits(sdr = []) {
   return onBits;
 }
 
-function injectNoise(sdr = [], noisePercentaje = 0.33) {
+/**
+ * Generates noise base in the sdr
+ * @param {[number]} sdr 
+ * @param {decimal} noisePercentaje 
+ */
+function injectNoise(sdr, noisePercentaje = 0.33) {
   const w = getW(sdr);
-  const maxNoiseBits = Math.floor(w * 3);
+  const n = sdr.length;
+
+  const maxNoiseBits = Math.floor(w * noisePercentaje);
 
   const onBits = getOnBits(sdr);
 
-  onBits.forEach((bitIndex) => {
+  function getBitsToTurnOff() {
+    const bitsToTurnOff = [];
+    let noiseBitCounter = 0;
 
-  });
-  const noiseBits = {};
+    while (noiseBitCounter < maxNoiseBits) {
+      const bitToTurnOff = onBits[_.random(0, w - 1)];
+
+      if (!bitsToTurnOff.includes(bitToTurnOff)) {
+        bitsToTurnOff.push(bitToTurnOff);
+        noiseBitCounter++;
+      }
+    }
+    return bitsToTurnOff;
+  }
+
+  function getBitsToTurnOn() {
+    const bitsToTurnOn = [];
+    let noiseBitCounter = 0;
+    while (noiseBitCounter < maxNoiseBits) {
+      const bitToTurnOn = _.random(0, n - 1);
+
+      if (!bitsToTurnOn.includes(bitToTurnOn) && !onBits.includes(bitToTurnOn)) {
+        bitsToTurnOn.push(bitToTurnOn);
+        noiseBitCounter++;
+      }
+    }
+    return bitsToTurnOn;
+  }
 
 
-
-
+  const bitsToTurnOff = getBitsToTurnOff();
+  const bitsToTurnOn = getBitsToTurnOn();
+  bitsToTurnOff.forEach(bit => sdr[bit] = 0);
+  bitsToTurnOn.forEach(bit => sdr[bit] = 1);
 }
 
 module.exports = {
   getSparsity,
   getCapacity,
   createSDR,
-  getInfo
+  getInfo,
+  injectNoise
 };
