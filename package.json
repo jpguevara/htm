@@ -1,5 +1,5 @@
 {
-  "name": "webpack-babel-html-starter",
+  "name": "htm-samples",
   "scripts": {
     "webpack-dev-server": "webpack-dev-server",
     "build": "npm run clean && webpack",
@@ -8,6 +8,7 @@
     "start": "npm run webpack-dev-server"
   },
   "dependencies": {
+    "promise-polyfill": "7.0.0",
     "mathjs": "^3.20.2",
     "underscore": "^1.8.3"
   },
@@ -15,6 +16,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "diff-dom": "^2.3.0",
     "html-webpack-plugin": "^2.30.1",
     "http-server": "^0.10.0",
     "rimraf": "^2.6.2",

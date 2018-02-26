@@ -8,7 +8,9 @@ module.exports = {
   context: rootPath + '/app',
   entry: {
     app: './main.js',
-    // vendor: ['angular','@uirouter/angularjs']
+    // vendor: [
+    //   'diff-dom'
+    // ]
 
   },
   output: {
@@ -35,7 +37,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({title:'Webpack Html Starter'})
+    new HtmlWebpackPlugin({ title: 'Webpack Html Starter' }),
     // new webpack.optimize.CommonsChunkPlugin({
     //   name: "vendor",
     //   filename: "vendor.bundle.js"
