@@ -6,53 +6,32 @@ const _ = require('underscore');
 
 
 
-// const sdr1 = SDR.createSDR(16, 4);
-const sdr1 = SDR.createSDR(16, 4);
-const sdr2 = [...sdr1];
-
-SDR.getInfo(sdr1);
-SDR.injectNoise(sdr2);
-SDR.getInfo(sdr2);
-
-const n = sdr1.length;
 
 
-const drawGrid = function (w, h, idOrElement) {
 
-  const canvas = idOrElement instanceof window.Element ? idOrElement : document.getElementById(id);
-  const ctx = canvas.getContext('2d');
-  ctx.canvas.width = w;
-  ctx.canvas.height = h;
 
-  const cellSize = 40;
-  const cellSizeHeight = 40;
-  const data = `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"> 
-      <defs> 
-          <pattern id="smallGrid" width="${cellSize}" height="${cellSizeHeight}" patternUnits="userSpaceOnUse"> 
-              <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5" /> 
-          </pattern> 
-          
-      </defs> 
-      <rect width="100%" height="100%" fill="url(#grid)" /> 
-  </svg>`;
+function generateNewSdr() {
+  // const sdr1 = SDR.createSDR(16, 4);
+  const sdr1 = SDR.createSDR(1024, 8);
+  const sdr2 = [...sdr1];
 
-  var DOMURL = window.URL || window.webkitURL || window;
+  SDR.getInfo(sdr1);
+  // SDR.injectNoise(sdr2);
+  // SDR.getInfo(sdr2);
 
-  var img = new Image();
-  var svg = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
-  var url = DOMURL.createObjectURL(svg);
-
-  img.onload = function () {
-    ctx.drawImage(img, 0, 0);
-    DOMURL.revokeObjectURL(url);
-  }
-  img.src = url;
+  const n = sdr1.length;
+  const rowsAndCols = Math.ceil(Math.sqrt(n));
+  SDR.drawGrid(canvas, { w: 400, h: 400, rows: rowsAndCols, cols: rowsAndCols, sdr: sdr1 });
 }
 
 
 
-const grid = dom.h('canvas', { id: 'grid' });
+const canvas = dom.h('canvas', { width: 400, height: 400, style: "border:1px solid red;" });
+const btnNew = dom.button('new', {
+  onclick: generateNewSdr
+});
+const containerDiv = dom.div(canvas, btnNew)
 
+// window.setInterval(generateNewSdr, 100);
 
-drawGrid(400, 400, grid);
-document.body.appendChild(grid);
+document.body.appendChild(containerDiv);
