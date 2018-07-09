@@ -5,32 +5,38 @@ const _ = require('underscore');
 
 
 
+let sdr1 = SDR.createSDR({n:1024, w:8, randomize:true});
+let sdr2 = [...sdr1];
+SDR.injectNoise(sdr2);
+let overlapedSdr = SDR.overlap(sdr1, sdr2);
 
-
-
-
-
-function generateNewSdr() {
-  // const sdr1 = SDR.createSDR(16, 4);
-  const sdr1 = SDR.createSDR(1024, 8);
-  const sdr2 = [...sdr1];
-
-  SDR.getInfo(sdr1);
-  // SDR.injectNoise(sdr2);
-  // SDR.getInfo(sdr2);
-
-  const n = sdr1.length;
+function redraw(c1,c2,c3,s1,s2,s3) {
+  const n = s1.length;
   const rowsAndCols = Math.ceil(Math.sqrt(n));
-  SDR.drawGrid(canvas, { w: 400, h: 400, rows: rowsAndCols, cols: rowsAndCols, sdr: sdr1 });
+  SDR.drawGrid(c1, { w: 400, h: 400, rows: rowsAndCols, cols: rowsAndCols, sdr: s1 });
+  SDR.drawGrid(c2, { w: 400, h: 400, rows: rowsAndCols, cols: rowsAndCols, sdr: s2 });
+  SDR.drawGrid(c3, { w: 400, h: 400, rows: rowsAndCols, cols: rowsAndCols, sdr: s3 });
 }
 
+function generateNewSdr(c1,c2,c3) {
+  // const sdr1 = SDR.createSDR(16, 4);
+  sdr1 = SDR.createSDR({n:1024, w:8, randomize:true});
+  sdr2 = [...sdr1];
+  SDR.injectNoise(sdr2);
+  overlapedSdr = SDR.overlap(sdr1, sdr2);
+  
+  redraw(c1,c2,c3,sdr1,sdr2,overlapedSdr);
+}
 
+const canvas1 = dom.h('canvas', { width: 400, height: 400, style: "border:1px solid red;" });
+const canvas2 = dom.h('canvas', { width: 400, height: 400, style: "border:1px solid red;" });
+const canvas3 = dom.h('canvas', { width: 400, height: 400, style: "border:1px solid red;" });
 
-const canvas = dom.h('canvas', { width: 400, height: 400, style: "border:1px solid red;" });
 const btnNew = dom.button('new', {
-  onclick: generateNewSdr
+  onclick: ()=>generateNewSdr(canvas1,canvas2,canvas3)
 });
-const containerDiv = dom.div(canvas, btnNew)
+
+const containerDiv = dom.div(canvas1,canvas2,canvas3, btnNew)
 
 // window.setInterval(generateNewSdr, 100);
 

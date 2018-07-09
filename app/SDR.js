@@ -71,10 +71,9 @@ function reset(sdr, value) {
   return sdr;
 }
 
-function createSDR(n = 2048, w = 40) {
+function createSDR({n = 2048, w = 40, randomize=false}) {
   const sdr = Array(n).fill(0);
-  // reset(sdr, 0);
-  fillRandomSdr(sdr, w);
+  randomize && fillRandomSdr(sdr, w);
   return sdr;
 }
 
@@ -200,11 +199,25 @@ const drawGrid = function (canvas, { w = 200, h = 200, rows, cols, bgColor = 'wh
   });
 }
 
+const overlap = (sdr1, sdr2)=>{
+  if (sdr1.length!== sdr2.length) {
+    throw 'Cant overlap if SDR are not from the same size.';
+  }
+
+  const n = sdr1.length;
+  const overlapedSdr = createSDR({n, w:0});
+  for (let i = 0; i < n; i++) {
+    overlapedSdr[i]= sdr1[i] && sdr2[i];
+  }
+  return overlapedSdr;
+}
+
 module.exports = {
   getSparsity,
   getCapacity,
   createSDR,
   getInfo,
   injectNoise,
-  drawGrid
+  drawGrid,
+  overlap
 };
