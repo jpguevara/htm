@@ -71,7 +71,7 @@ function reset(sdr, value) {
   return sdr;
 }
 
-function createSDR({n = 2048, w = 40, randomize=false}) {
+function createSDR({ n = 2048, w = 40, randomize = false } = {}) {
   const sdr = Array(n).fill(0);
   randomize && fillRandomSdr(sdr, w);
   return sdr;
@@ -85,6 +85,7 @@ function getInfo(sdr = []) {
   console.log('SDR: n=', n, ' w=', w, ' sparsity=', sparsity, 'capacity: ', capacity);
   console.log('OnBits: ', getOnBits(sdr));
   console.log('sdr: ', sdr);
+
 }
 /**
  * 
@@ -155,6 +156,7 @@ const drawGrid = function (canvas, { w = 200, h = 200, rows, cols, bgColor = 'wh
   ctx.canvas.width = w;
   ctx.canvas.height = h;
 
+  console.log('cols: ', cols);
   const cellSizeWidth = w / cols;
   const cellSizeHeight = h / rows;
 
@@ -172,10 +174,15 @@ const drawGrid = function (canvas, { w = 200, h = 200, rows, cols, bgColor = 'wh
   function drawCell(x, y, w, h, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
+    // ctx.rect(x, y, w, h);
+    ctx.strokeStyle = 'grey';
+    ctx.stroke();
   }
 
-  function drawCellAt(row, col) {
-    drawCell(row * cellSizeHeight, col * cellSizeWidth, cellSizeWidth, cellSizeHeight, 'blue');
+  function drawCellAt({ row, col, fillColor = 'white' }) {
+    const x0 = row * cellSizeHeight;
+    const y0 = col * cellSizeWidth;
+    drawCell(x0, y0, cellSizeWidth, cellSizeHeight, fillColor);
   }
 
   function sdrToGridCoordinates(index) {
@@ -184,30 +191,28 @@ const drawGrid = function (canvas, { w = 200, h = 200, rows, cols, bgColor = 'wh
     return { x, y };
   }
 
-  for (let row = 0; row <= rows; row++) {
-    drawLine(0, row * cellSizeHeight, w, row * cellSizeHeight);
-  }
-  for (let col = 0; col <= cols; col++) {
-    drawLine(col * cellSizeWidth, 0, col * cellSizeWidth, h);
-  }
+  // for (let row = 0; row <= rows; row++) {
+  //   drawLine(0, row * cellSizeHeight, w, row * cellSizeHeight);
+  // }
+  // for (let col = 0; col <= cols; col++) {
+  //   drawLine(col * cellSizeWidth, 0, col * cellSizeWidth, h);
+  // }
 
   sdr.forEach((cell, index) => {
     const pos = sdrToGridCoordinates(index);
-    if (cell === 1) {
-      drawCellAt(pos.x, pos.y)
-    }
+    drawCellAt({ row: pos.x, col: pos.y, fillColor: (cell === 1 ? 'blue' : 'white') });
   });
 }
 
-const overlap = (sdr1, sdr2)=>{
-  if (sdr1.length!== sdr2.length) {
+const overlap = (sdr1, sdr2) => {
+  if (sdr1.length !== sdr2.length) {
     throw 'Cant overlap if SDR are not from the same size.';
   }
 
   const n = sdr1.length;
-  const overlapedSdr = createSDR({n, w:0});
+  const overlapedSdr = createSDR({ n, w: 0 });
   for (let i = 0; i < n; i++) {
-    overlapedSdr[i]= sdr1[i] && sdr2[i];
+    overlapedSdr[i] = sdr1[i] && sdr2[i];
   }
   return overlapedSdr;
 }

@@ -73,5 +73,6 @@ module.exports = {
   div: (...args) => h('div', ...args),
   input: (...args) => h('input', ...args),
   label: (...args) => h('label', ...args),
-  button: (...args) => h('button', ...args)
+  button: (...args) => h('button', ...args),
+  canvas: (...args) => h('canvas', ...args)
 };
