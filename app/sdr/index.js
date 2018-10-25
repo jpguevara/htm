@@ -71,8 +71,11 @@ function reset(sdr, value) {
   return sdr;
 }
 
-export function createSDR({ n = 2048, w = 40, randomize = false } = {}) {
+export function createSdr({ n = 2048, w = 40, randomize = false } = {}) {
   const sdr = Array(n).fill(0);
+  if (w > n) {
+    throw 'the sdr w value cant be greather that n.';
+  }
   randomize && fillRandomSdr(sdr, w);
   return sdr;
 }
@@ -157,7 +160,7 @@ export const overlap = (sdr1, sdr2) => {
   }
 
   const n = sdr1.length;
-  const overlapedSdr = createSDR({ n, w: 0 });
+  const overlapedSdr = createSdr({ n, w: 0 });
   for (let i = 0; i < n; i++) {
     overlapedSdr[i] = sdr1[i] && sdr2[i];
   }

@@ -2,23 +2,29 @@
   "name": "htm-samples",
   "scripts": {
     "webpack-dev-server": "webpack-dev-server",
+    "jasmine": "jasmine",
     "build": "npm run clean && webpack",
     "build:prod": "npm run clean && webpack -p",
     "clean": "rimraf dist/*",
-    "start": "npm run webpack-dev-server"
+    "start": "npm run webpack-dev-server",
+    "test": "babel-node spec/run.js"
   },
   "dependencies": {
-    "promise-polyfill": "7.0.0",
+    "babel-cli": "^6.26.0",
     "mathjs": "^3.20.2",
+    "promise-polyfill": "7.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
     "diff-dom": "^2.3.0",
     "html-webpack-plugin": "^2.30.1",
     "http-server": "^0.10.0",
+    "jasmine": "^3.2.0",
+    "jasmine-expect": "^3.8.4",
     "rimraf": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.0.1",
     "webpack": "^3.8.1",
