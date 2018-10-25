@@ -1,8 +1,8 @@
-const _ = require('underscore');
-const math = require('mathjs');
-const { factorial, divide, multiply, subtract, bignumber, number } = require('mathjs');
+import { range, random } from 'underscore';
+import { config } from 'mathjs';
+import { factorial, divide, multiply, subtract, bignumber, number } from 'mathjs';
 
-math.config({
+config({
   number: 'BigNumber', // Default type of number:
   // 'number' (default), 'BigNumber', or 'Fraction'
   precision: 64        // Number of significant digits for BigNumbers
@@ -35,12 +35,12 @@ function getCapacity(n, w) {
 
 function fillRandomSdr(sdr = [], w) {
   const n = sdr.length;
-  const bitsToTurnOn = _.range(w).reduce(
+  const bitsToTurnOn = range(w).reduce(
     (prev, current, index, array) => {
-      let bitToTurnOn = _.random(0, n - 1);
+      let bitToTurnOn = random(0, n - 1);
       while (bitToTurnOn in prev) {
         console.log('repetido');
-        bitToTurnOn = _.random(0, n - 1);
+        bitToTurnOn = random(0, n - 1);
       }
 
       prev[bitToTurnOn] = 1;
@@ -71,7 +71,7 @@ function reset(sdr, value) {
   return sdr;
 }
 
-function createSDR({ n = 2048, w = 40, randomize = false } = {}) {
+export function createSDR({ n = 2048, w = 40, randomize = false } = {}) {
   const sdr = Array(n).fill(0);
   randomize && fillRandomSdr(sdr, w);
   return sdr;
@@ -105,7 +105,7 @@ function getOnBits(sdr) {
  * @param {[number]} sdr 
  * @param {decimal} noisePercentaje 
  */
-function injectNoise(sdr, noisePercentaje = 0.33) {
+export function injectNoise(sdr, noisePercentaje = 0.33) {
   const w = getW(sdr);
   const n = sdr.length;
 
@@ -118,7 +118,7 @@ function injectNoise(sdr, noisePercentaje = 0.33) {
     let noiseBitCounter = 0;
 
     while (noiseBitCounter < maxNoiseBits) {
-      const bitToTurnOff = onBits[_.random(0, w - 1)];
+      const bitToTurnOff = onBits[random(0, w - 1)];
 
       if (!bitsToTurnOff.includes(bitToTurnOff)) {
         bitsToTurnOff.push(bitToTurnOff);
@@ -132,7 +132,7 @@ function injectNoise(sdr, noisePercentaje = 0.33) {
     const bitsToTurnOn = [];
     let noiseBitCounter = 0;
     while (noiseBitCounter < maxNoiseBits) {
-      const bitToTurnOn = _.random(0, n - 1);
+      const bitToTurnOn = random(0, n - 1);
 
       if (!bitsToTurnOn.includes(bitToTurnOn) && !onBits.includes(bitToTurnOn)) {
         bitsToTurnOn.push(bitToTurnOn);
@@ -150,61 +150,8 @@ function injectNoise(sdr, noisePercentaje = 0.33) {
 }
 
 
-const drawGrid = function (canvas, { w = 200, h = 200, rows, cols, bgColor = 'white', sdr = [] }) {
-  if (!canvas) { console.error('No canvas found:', canvas); }
-  const ctx = canvas.getContext('2d');
-  ctx.canvas.width = w;
-  ctx.canvas.height = h;
 
-  console.log('cols: ', cols);
-  const cellSizeWidth = w / cols;
-  const cellSizeHeight = h / rows;
-
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0, 0, w, h);
-
-  function drawLine(x, y, x1, y1) {
-    ctx.moveTo(x, y);
-    ctx.lineTo(x1, y1);
-    ctx.strokeStyle = 'lightgrey';
-    // ctx.lineWidth = '1';
-    ctx.stroke();
-  }
-
-  function drawCell(x, y, w, h, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, w, h);
-    // ctx.rect(x, y, w, h);
-    ctx.strokeStyle = 'grey';
-    ctx.stroke();
-  }
-
-  function drawCellAt({ row, col, fillColor = 'white' }) {
-    const x0 = row * cellSizeHeight;
-    const y0 = col * cellSizeWidth;
-    drawCell(x0, y0, cellSizeWidth, cellSizeHeight, fillColor);
-  }
-
-  function sdrToGridCoordinates(index) {
-    const x = (index % cols);
-    const y = Math.floor(index / cols);
-    return { x, y };
-  }
-
-  // for (let row = 0; row <= rows; row++) {
-  //   drawLine(0, row * cellSizeHeight, w, row * cellSizeHeight);
-  // }
-  // for (let col = 0; col <= cols; col++) {
-  //   drawLine(col * cellSizeWidth, 0, col * cellSizeWidth, h);
-  // }
-
-  sdr.forEach((cell, index) => {
-    const pos = sdrToGridCoordinates(index);
-    drawCellAt({ row: pos.x, col: pos.y, fillColor: (cell === 1 ? 'blue' : 'white') });
-  });
-}
-
-const overlap = (sdr1, sdr2) => {
+export const overlap = (sdr1, sdr2) => {
   if (sdr1.length !== sdr2.length) {
     throw 'Cant overlap if SDR are not from the same size.';
   }
@@ -216,13 +163,3 @@ const overlap = (sdr1, sdr2) => {
   }
   return overlapedSdr;
 }
-
-module.exports = {
-  getSparsity,
-  getCapacity,
-  createSDR,
-  getInfo,
-  injectNoise,
-  drawGrid,
-  overlap
-};
