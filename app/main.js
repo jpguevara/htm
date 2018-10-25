@@ -1,10 +1,9 @@
 // import code from other files like this
-import { createSDR, injectNoise, overlap } from './sdr';
-import { drawGrid } from './sdr/render';
+import { createSdr, overlap, injectNoise, drawGrid } from './sdr';
 import { h as _h, button, div } from './libs/dom';
 import _ from 'underscore';
 
-let sdr1 = createSDR({ n: 1024, w: 8, randomize: true });
+let sdr1 = createSdr({ n: 1024, w: 8, randomize: true });
 let sdr2 = [...sdr1];
 injectNoise(sdr2);
 let overlapedSdr = overlap(sdr1, sdr2);
@@ -18,8 +17,8 @@ function redraw(c1, c2, c3, s1, s2, s3) {
 }
 
 function generateNewSdr(c1, c2, c3) {
-  // const sdr1 = SDR.createSDR(16, 4);
-  sdr1 = createSDR({ n: 1024, w: 8, randomize: true });
+  // const sdr1 = SDR.createSdr(16, 4);
+  sdr1 = createSdr({ n: 1024, w: 8, randomize: true });
   sdr2 = [...sdr1];
   injectNoise(sdr2);
   overlapedSdr = overlap(sdr1, sdr2);

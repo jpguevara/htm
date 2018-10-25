@@ -1,5 +1,5 @@
 
-import { createSdr } from "./index";
+import { createSdr } from "./createSdr";
 
 describe('createSDR', () => {
   it('should create a sdr as an array', () => {
